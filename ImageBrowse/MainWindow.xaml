@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <StackPanel>
+            <Button Margin="10,5,0,10" Click="Button_Click">打开图片文件夹</Button>
+        </StackPanel>
     </Grid>
 </Window>
