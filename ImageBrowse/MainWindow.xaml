@@ -9,6 +9,7 @@
     <Grid>
         <StackPanel>
             <Button Margin="10,5,0,10" Click="Button_Click">打开图片文件夹</Button>
+            <WrapPanel x:Name="wrapPanel1"></WrapPanel>
         </StackPanel>
     </Grid>
 </Window>
