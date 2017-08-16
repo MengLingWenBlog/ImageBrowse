@@ -11,8 +11,9 @@
         <ImageBrush x:Key="leftArrowImage" ImageSource="images/left.gif"></ImageBrush>
         <ImageBrush x:Key="rightArrowImage" ImageSource="images/right.gif"></ImageBrush>
         <ImageBrush x:Key="folderImage" ImageSource="images/folder_1114px.png"></ImageBrush>
-        <ImageBrush x:Key="clearImage" ImageSource="images/Clear_256px.png"></ImageBrush>
-        
+        <!--<ImageBrush x:Key="clearImage" ImageSource="images/Clear_256px.png"></ImageBrush>-->
+        <!--www.baidu.com/img/bd_logo1.png-->
+        <Image x:Key="clearImage" Source="pack://siteoforigin:///www.baidu.com/img/bd_logo1.png"></Image>
         <Style TargetType="Button" x:Key="orientationButtonStyle">
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
