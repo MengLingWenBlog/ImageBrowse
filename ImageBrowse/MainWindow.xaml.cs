@@ -40,14 +40,14 @@ namespace ImageBrowse
             //imgds.namePath = @"C:\Users\李帅\Pictures\Saved Pictures\753759.png";
             //imgdss.Add(imgds);
 
-            //ImageDataSource imgds2 = new ImageDataSource();
+            ////ImageDataSource imgds2 = new ImageDataSource();
             //imgds2.namePath = @"C:\Users\李帅\Pictures\Saved Pictures\821016.png";
             //imgdss.Add(imgds2);
             //this.listView.DataContext = imgdss;
         }
         
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void ClickLoadMaginButton(object sender, RoutedEventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -71,13 +71,42 @@ namespace ImageBrowse
                 //this.listView.ItemsSource = imgdss;
 
                 List<string> imgNames = ImageGetter.GetFilePaths(fbd.SelectedPath);
+                if (imgNames.Count <= 0)
+                {
+                    return;
+                }
+
+                int countSuccess = 0;
+                int countFaild = 0;
                 foreach (string name in imgNames)
                 {
-                    ImageDataSource imgds = new ImageDataSource();
-                    imgds.namePath = name;
-                    imgdss.Add(imgds);
+                    bool inImgdss = false;
+                    foreach(var imgds_temp in imgdss)
+                    {
+                        if (name.Equals(imgds_temp.namePath))
+                        {
+                            inImgdss = true;
+                            break;
+                        }
+                    }
+                    //如果该图片不在原先的图片列表中，则追加
+                    if (!inImgdss)
+                    {
+                        countSuccess++;
+                        ImageDataSource imgds = new ImageDataSource();
+                        imgds.namePath = name;
+                        imgdss.Add(imgds);
+                    }
+                    else
+                    {
+                        countFaild++;
+                    }
                 }
                 this.listBox.ItemsSource = imgdss;
+
+                string str = "载入成功图片： " + countSuccess + "个";
+                str += countFaild <= 0 ? "" : "\n重复图片：" + countFaild + "个"; 
+                System.Windows.MessageBox.Show(str);
             }
             else
             {
@@ -122,6 +151,18 @@ namespace ImageBrowse
             {
                 return null;
             }
+        }
+
+        private void ClickLeftButton(object sender, RoutedEventArgs e)
+        {
+            if(this.listBox.SelectedIndex>0)
+                this.listBox.SelectedIndex--;
+        }
+
+        private void ClickRightButton(object sender, RoutedEventArgs e)
+        {
+            //此处++运算符被重载，自动检测不超出长度才自增
+            this.listBox.SelectedIndex++;
         }
     }
 }

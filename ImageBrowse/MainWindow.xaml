@@ -6,17 +6,53 @@
         xmlns:local="clr-namespace:ImageBrowse"
         mc:Ignorable="d"
         Title="图片浏览器" Height="500" Width="1000">
-    
+
+    <Window.Resources>
+        <ImageBrush x:Key="leftArrowImage" ImageSource="images/left.gif"></ImageBrush>
+        <ImageBrush x:Key="rightArrowImage" ImageSource="images/right.gif"></ImageBrush>
+
+        <Style TargetType="Button" x:Key="orientationButtonStyle">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="MinWidth" Value="50" />
+            <Setter Property="MinHeight" Value="50" />
+            <Setter Property="BorderBrush" Value="White" />
+        </Style>
+    </Window.Resources>
+
     <Grid Margin="3">
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="6*"></RowDefinition>
             <RowDefinition Height="4*"></RowDefinition>
         </Grid.RowDefinitions>
-        
-        <Button Margin="10,5,0,10" Grid.Row="0" Click="Button_Click">载入图片</Button>
-        <Image Grid.Row="1" Source="{Binding ElementName=listBox,Path=SelectedItem.namePath}"></Image>
-        <ListBox Name="listBox"  Grid.Row="2" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+
+        <!-- 顶部导入图片文件按钮 -->
+        <Button x:Name="loadMaginButton" Margin="10,5,10,10" Grid.Row="0" Click="ClickLoadMaginButton">载入图片</Button>
+
+        <!-- 中间浏览图片区域：分左中右三块区域
+            左边：向左浏览下一个图片按钮
+            中间：显示选中的图片
+            右边：向右浏览下一个图片按钮 -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="164*"></ColumnDefinition>
+                <ColumnDefinition Width="427*"></ColumnDefinition>
+                <ColumnDefinition Width="230*"/>
+                <ColumnDefinition Width="165*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Button x:Name="leftButton" Grid.Column="0" Background="{StaticResource leftArrowImage}"
+                    Click="ClickLeftButton" Style="{StaticResource orientationButtonStyle}">
+            </Button>
+            <Image Grid.Column="1" Source="{Binding ElementName=listBox,Path=SelectedItem.namePath}" Grid.ColumnSpan="2"></Image>
+            <Button x:Name="rightButton" Grid.Column="3"  Background="{StaticResource rightArrowImage}"
+                    Click="ClickRightButton" Style="{StaticResource orientationButtonStyle}">
+            </Button>
+        </Grid>
+
+        <!-- 待浏览的图片列表 -->
+        <ListBox Name="listBox" Grid.Row="2"  ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Hidden">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel x:Name="imagePanel" Orientation="Horizontal"/>
@@ -24,11 +60,11 @@
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <!--<Grid Margin="5,0,0,5">-->
-                    <Image Source="{Binding Path=namePath}" 
-                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                               MaxHeight="100"/>
-                    <!--</Grid>-->
+                    <Grid Margin="5,0,0,5">
+                        <Image Source="{Binding Path=namePath}" 
+                                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                                   MaxHeight="100"/>
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
