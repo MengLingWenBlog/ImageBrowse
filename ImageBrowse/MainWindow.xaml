@@ -10,7 +10,9 @@
     <Window.Resources>
         <ImageBrush x:Key="leftArrowImage" ImageSource="images/left.gif"></ImageBrush>
         <ImageBrush x:Key="rightArrowImage" ImageSource="images/right.gif"></ImageBrush>
-
+        <ImageBrush x:Key="folderImage" ImageSource="images/folder_1114px.png"></ImageBrush>
+        <ImageBrush x:Key="clearImage" ImageSource="images/Clear_256px.png"></ImageBrush>
+        
         <Style TargetType="Button" x:Key="orientationButtonStyle">
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
@@ -32,11 +34,13 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition Width="9*"></ColumnDefinition>
-                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Margin="0,0,5,3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="文件路径:" FontSize="18"></TextBlock>
             <TextBox x:Name="loadMaginText" Grid.Column="1" Margin="5,3,5,3" TextWrapping="Wrap" FontSize="18"  TextChanged="loadMaginText_TextChanged"></TextBox>
-            <Button x:Name="loadMaginButton" Grid.Column="2" Margin="5,3,5,3"  Click="ClickLoadMaginButton">载入图片</Button>
+            <Button x:Name="loadMaginButton" Grid.Column="2" Margin="5,3,5,3"  Click="ClickLoadMaginButton" Background="{StaticResource folderImage}" Style="{StaticResource orientationButtonStyle}"></Button>
+            <Button x:Name="clearMaginButton" Grid.Column="3" Margin="5,3,5,3"  Click="clearMaginButton_Click" Background="{StaticResource clearImage}"  Style="{StaticResource orientationButtonStyle}"></Button>
         </Grid>
         <!-- 中间浏览图片区域：分左中右三块区域
             左边：向左浏览下一个图片按钮

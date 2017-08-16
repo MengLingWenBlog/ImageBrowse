@@ -17,7 +17,6 @@ namespace ImageBrowse
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    ///
 
     //定义Image类型别名
     using MyImage = System.Windows.Controls.Image;
@@ -146,6 +145,16 @@ namespace ImageBrowse
         private void loadMaginText_TextChanged(object sender, TextChangedEventArgs e)
         {
             loadBitmap((sender as System.Windows.Controls.TextBox).Text);
+        }
+
+        private void clearMaginButton_Click(object sender, RoutedEventArgs e)
+        {
+            int length = imgdss.Count;
+            if (length <= 0)
+                return;
+            imgdss.Clear();
+            this.loadMaginText.Text = "";
+            System.Windows.MessageBox.Show("清除"+length+"张图片");
         }
     }
 }
