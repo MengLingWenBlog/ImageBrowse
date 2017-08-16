@@ -23,15 +23,6 @@ namespace ImageBrowse
             var imageList = fileList.Where(x => tokenList.Any(x1 => x.EndsWith(x1, StringComparison.InvariantCultureIgnoreCase)));
             var images1 = imageList.Select(x => new Image { Source = new BitmapImage(new Uri(x)) });
             return images1.ToList();
-
-            //BitmapFactory.Options options = new BitmapFactory.Options（）;
-
-            //options.inSampleSize = 2;
-
-            //Bitmap img = BitmapFactory.decodeFile（"/sdcard/1.png"， options）;
-
-            //Bitmap bm = new Bitmap(fileList[0]);
-
         }
 
         public static List<System.Drawing.Bitmap> GetBitMapList(string folderName)

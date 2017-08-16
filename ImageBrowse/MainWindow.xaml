@@ -28,8 +28,16 @@
         </Grid.RowDefinitions>
 
         <!-- 顶部导入图片文件按钮 -->
-        <Button x:Name="loadMaginButton" Margin="10,5,10,10" Grid.Row="0" Click="ClickLoadMaginButton">载入图片</Button>
-
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="9*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Margin="0,0,5,3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="文件路径:" FontSize="18"></TextBlock>
+            <TextBox x:Name="loadMaginText" Grid.Column="1" Margin="5,3,5,3" TextWrapping="Wrap" FontSize="18"  TextChanged="loadMaginText_TextChanged"></TextBox>
+            <Button x:Name="loadMaginButton" Grid.Column="2" Margin="5,3,5,3"  Click="ClickLoadMaginButton">载入图片</Button>
+        </Grid>
         <!-- 中间浏览图片区域：分左中右三块区域
             左边：向左浏览下一个图片按钮
             中间：显示选中的图片

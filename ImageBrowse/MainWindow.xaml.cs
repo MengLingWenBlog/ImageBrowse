@@ -52,61 +52,8 @@ namespace ImageBrowse
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                //imgs = ImageGetter.GetList(fbd.SelectedPath);
-                //foreach (MyImage img in imgs)
-                //{
-                //    //BitmapSource bs = new BitmapImage(new Uri(@"image file path", UriKind.RelativeOrAbsolute));
-
-                //    this.wrapPanel1.Children.Add(img);
-                //}
-
-                //bmps = ImageGetter.GetBitMapList(fbd.SelectedPath);
-                //foreach (Bitmap bmp in bmps)
-                //{
-                //    //Bitmap bmp_temp = KiResizeImage(bmp,20,20);
-                //    MyImage img = new MyImage();
-                //    img.Source = loadBitmap(bmp);
-                //    imgs.Add(img);
-                //}
-                //this.listView.ItemsSource = imgdss;
-
-                List<string> imgNames = ImageGetter.GetFilePaths(fbd.SelectedPath);
-                if (imgNames.Count <= 0)
-                {
-                    return;
-                }
-
-                int countSuccess = 0;
-                int countFaild = 0;
-                foreach (string name in imgNames)
-                {
-                    bool inImgdss = false;
-                    foreach(var imgds_temp in imgdss)
-                    {
-                        if (name.Equals(imgds_temp.namePath))
-                        {
-                            inImgdss = true;
-                            break;
-                        }
-                    }
-                    //如果该图片不在原先的图片列表中，则追加
-                    if (!inImgdss)
-                    {
-                        countSuccess++;
-                        ImageDataSource imgds = new ImageDataSource();
-                        imgds.namePath = name;
-                        imgdss.Add(imgds);
-                    }
-                    else
-                    {
-                        countFaild++;
-                    }
-                }
-                this.listBox.ItemsSource = imgdss;
-
-                string str = "载入成功图片： " + countSuccess + "个";
-                str += countFaild <= 0 ? "" : "\n重复图片：" + countFaild + "个"; 
-                System.Windows.MessageBox.Show(str);
+                //loadBitmap(fbd.SelectedPath);
+                this.loadMaginText.Text = fbd.SelectedPath;
             }
             else
             {
@@ -114,22 +61,53 @@ namespace ImageBrowse
             }
         }
 
-        private BitmapSource loadBitmap(System.Drawing.Bitmap source)
-        {
-            IntPtr ip = source.GetHbitmap();
-            BitmapSource bs = null;
-            try
-            {
-                bs = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(ip,
-                IntPtr.Zero, Int32Rect.Empty,
-                System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-            }
-            finally
-            {
-                //DeleteObject(ip);
-            }
 
-            return bs;
+
+        private void loadBitmap(string path)
+        {
+            //路径无效则直接返回
+            if (!System.IO.Directory.Exists(path))
+            {
+                return;
+            }
+            //目录下无图片文件则直接返回
+            List<string> imgNames = ImageGetter.GetFilePaths(path);
+            if (imgNames.Count <= 0)
+            {
+                return;
+            }
+            this.loadMaginText.Text = path;
+            int countSuccess = 0;
+            int countFaild = 0;
+            foreach (string name in imgNames)
+            {
+                bool inImgdss = false;
+                foreach (var imgds_temp in imgdss)
+                {
+                    if (name.Equals(imgds_temp.namePath))
+                    {
+                        inImgdss = true;
+                        break;
+                    }
+                }
+                //如果该图片不在原先的图片列表中，则追加
+                if (!inImgdss)
+                {
+                    countSuccess++;
+                    ImageDataSource imgds = new ImageDataSource();
+                    imgds.namePath = name;
+                    imgdss.Add(imgds);
+                }
+                else
+                {
+                    countFaild++;
+                }
+            }
+            this.listBox.ItemsSource = imgdss;
+
+            string str = "载入成功图片： " + countSuccess + "个";
+            str += countFaild <= 0 ? "" : "\n重复图片：" + countFaild + "个";
+            System.Windows.MessageBox.Show(str);
         }
 
 
@@ -163,6 +141,11 @@ namespace ImageBrowse
         {
             //此处++运算符被重载，自动检测不超出长度才自增
             this.listBox.SelectedIndex++;
+        }
+
+        private void loadMaginText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            loadBitmap((sender as System.Windows.Controls.TextBox).Text);
         }
     }
 }
