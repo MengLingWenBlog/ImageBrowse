@@ -1,111 +1,127 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
+using System.Drawing.Drawing2D;
 /*using System.Drawing;*/
 
 namespace ImageBrowse
 {
+    using System.Collections.ObjectModel;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    ///
+
+    //定义Image类型别名
+    using MyImage = System.Windows.Controls.Image;
+
+    public class ImageDataSource
+    {
+        public string namePath { get; set; }
+    }
+
     public partial class MainWindow : Window
     {
+        //public List<Bitmap> bmps = new List<Bitmap>();
+        //public ObservableCollection<MyImage> imgs = new ObservableCollection<MyImage>();
+        public ObservableCollection<ImageDataSource> imgdss = new ObservableCollection<ImageDataSource>();
+
         public MainWindow()
         {
             InitializeComponent();
+            //ImageDataSource imgds = new ImageDataSource();
+            //imgds.namePath = @"C:\Users\李帅\Pictures\Saved Pictures\753759.png";
+            //imgdss.Add(imgds);
+
+            //ImageDataSource imgds2 = new ImageDataSource();
+            //imgds2.namePath = @"C:\Users\李帅\Pictures\Saved Pictures\821016.png";
+            //imgdss.Add(imgds2);
+            //this.listView.DataContext = imgdss;
         }
+        
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                System.Windows.MessageBox.Show("文件夹打开成功");
-                ImageGetter imgGetter = new ImageGetter();
-                List <Image> imgs = imgGetter.GetList(fbd.SelectedPath);
-                //new PanelManage().AddRange(wrapPanel1, imgs);
-                foreach (Image img in imgs)
-                {
-                    //System.Drawing.Bitmap img_temp = new System.Drawing.Bitmap(img, 20, 20);
-                    //this.wrapPanel1.Children.Add(img_temp);
-                    this.wrapPanel1.Children.Add(img);
-                }
+                //imgs = ImageGetter.GetList(fbd.SelectedPath);
+                //foreach (MyImage img in imgs)
+                //{
+                //    //BitmapSource bs = new BitmapImage(new Uri(@"image file path", UriKind.RelativeOrAbsolute));
 
-                List<string> list = new List<string>();
-                imgGetter.getPath(fbd.SelectedPath, ref list);
-                System.Windows.MessageBox.Show(list.ToString());
+                //    this.wrapPanel1.Children.Add(img);
+                //}
+
+                //bmps = ImageGetter.GetBitMapList(fbd.SelectedPath);
+                //foreach (Bitmap bmp in bmps)
+                //{
+                //    //Bitmap bmp_temp = KiResizeImage(bmp,20,20);
+                //    MyImage img = new MyImage();
+                //    img.Source = loadBitmap(bmp);
+                //    imgs.Add(img);
+                //}
+                //this.listView.ItemsSource = imgdss;
+
+                List<string> imgNames = ImageGetter.GetFilePaths(fbd.SelectedPath);
+                foreach (string name in imgNames)
+                {
+                    ImageDataSource imgds = new ImageDataSource();
+                    imgds.namePath = name;
+                    imgdss.Add(imgds);
+                }
+                this.listBox.ItemsSource = imgdss;
             }
             else
             {
                 System.Windows.MessageBox.Show("请选择一个文件夹");
             }
-            //var fileList = Dirctory.EnumerateFile();
         }
 
-        
-    }
-
-    class ImageGetter
-    {
-        public ImageGetter()
+        private BitmapSource loadBitmap(System.Drawing.Bitmap source)
         {
-
-        }
-
-        public List<Image> GetList(string folderName)
-        {
-            IEnumerable<string> fileList = Directory.EnumerateFiles(folderName);
-            string[] tokenList = { ".jpg", ".png", ".bmp", ".jpeg", "gif" };
-            var imageList = fileList.Where(x => tokenList.Any(x1 => x.EndsWith(x1, StringComparison.InvariantCultureIgnoreCase)));
-            var images1 = imageList.Select(x => new Image { Source = new BitmapImage(new Uri(x)) });
-            return images1.ToList();
-
-            //BitmapFactory.Options options = new BitmapFactory.Options（）;
-
-            //options.inSampleSize = 2;
-
-            //Bitmap img = BitmapFactory.decodeFile（"/sdcard/1.png"， options）;
-
-            //Bitmap bm = new Bitmap(fileList[0]);
-
-        }
-
-        public void getPath(string path, ref List<string> list)
-        {
-            DirectoryInfo dir = new DirectoryInfo(path);
-            FileInfo[] fil = dir.GetFiles();
-            DirectoryInfo[] dii = dir.GetDirectories();
-            foreach (FileInfo f in fil)
+            IntPtr ip = source.GetHbitmap();
+            BitmapSource bs = null;
+            try
             {
-                if (FileIsImage(f))
-                { 
-                    list.Add(f.FullName);//添加文件的路径到列表
-                }
+                bs = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(ip,
+                IntPtr.Zero, Int32Rect.Empty,
+                System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
             }
-            //获取子文件夹内的文件列表，递归遍历
-            foreach (DirectoryInfo d in dii)
+            finally
             {
-                getPath(d.FullName,ref list);
-                //list.Add(d.FullName);//添加文件夹的路径到列表
+                //DeleteObject(ip);
             }
+
+            return bs;
         }
 
-        private bool FileIsImage(FileInfo f)
+
+        private Bitmap KiResizeImage(Bitmap bmp, int newW, int newH)
         {
-            string[] tokenList = { "jpg", "png", "bmp", "jpeg", "gif" };
-            foreach (string str in tokenList)
+            try
             {
-                if (string.Compare(Path.GetExtension(f.FullName), str) == 0)
-                {
-                    return true;
-                }
+                Bitmap b = new Bitmap(newW, newH);
+                Graphics g = Graphics.FromImage(b);
+
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+                g.DrawImage(bmp, new Rectangle(0, 0, newW, newH), new Rectangle(0, 0, bmp.Width, bmp.Height), GraphicsUnit.Pixel);
+                g.Dispose();
+
+                return b;
             }
-            return false;
+            catch
+            {
+                return null;
+            }
         }
     }
 }

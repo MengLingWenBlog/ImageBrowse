@@ -5,11 +5,32 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageBrowse"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        <StackPanel>
-            <Button Margin="10,5,0,10" Click="Button_Click">打开图片文件夹</Button>
-            <WrapPanel x:Name="wrapPanel1"></WrapPanel>
-        </StackPanel>
+        Title="图片浏览器" Height="500" Width="1000">
+    
+    <Grid Margin="3">
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="6*"></RowDefinition>
+            <RowDefinition Height="4*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Button Margin="10,5,0,10" Grid.Row="0" Click="Button_Click">载入图片</Button>
+        <Image Grid.Row="1" Source="{Binding ElementName=listBox,Path=SelectedItem.namePath}"></Image>
+        <ListBox Name="listBox"  Grid.Row="2" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel x:Name="imagePanel" Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <!--<Grid Margin="5,0,0,5">-->
+                    <Image Source="{Binding Path=namePath}" 
+                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                               MaxHeight="100"/>
+                    <!--</Grid>-->
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>
